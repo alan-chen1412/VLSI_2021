@@ -8,7 +8,7 @@ module SRAM_wrapper (
   output [31:0] DO
 );
 
-  SRAM i_SRAM (
+  weightSRAM i_SRAM (
     .A0   (A[0]  ),
     .A1   (A[1]  ),
     .A2   (A[2]  ),
@@ -19,10 +19,10 @@ module SRAM_wrapper (
     .A7   (A[7]  ),
     .A8   (A[8]  ),
     .A9   (A[9]  ),
-    .A10  (A[10] ),
-    .A11  (A[11] ),
-    .A12  (A[12] ),
-    .A13  (A[13] ),
+  //  .A10  (A[10] ),
+  //  .A11  (A[11] ),
+  //  .A12  (A[12] ),
+  //  .A13  (A[13] ),
     .DO0  (DO[0] ),
     .DO1  (DO[1] ),
     .DO2  (DO[2] ),

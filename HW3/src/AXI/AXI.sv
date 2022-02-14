@@ -1,213 +1,271 @@
 //================================================
-// Auther:      Chang Wan-Yun (Claire)
-// Filename:    AXI.sv
-// Description: Top module of AXI
+// Auther:      Chang Wan-Yun (Claire)            
+// Filename:    AXI.sv                            
+// Description: Top module of AXI                  
 // Version:     1.0 
 //================================================
 `include "AXI_define.svh"
+`include "AR.sv"
+`include "AW.sv"
+`include "DW.sv"
+`include "Default_Slave.sv"
+`include "RW.sv"
+`include "DR.sv"
+`include "AXI_slave.sv"
+`include "AXI_master.sv"
 
 module AXI(
+	input ACLK,
+	input ARESETn,
+    AXI_master_p.bridge master0,
+    AXI_master_p.bridge master1,
+    AXI_slave_p.bridge slave0,
+    AXI_slave_p.bridge slave1
+);
+    //---------- you should put your design here ----------//
 
-  input ACLK,
-  input ARESETn,
-  //MASTER INTERFACE
-  // M0
-  // WRITE
-  input [`AXI_ID_BITS-1:0]          AWID_M1,
-  input [`AXI_ADDR_BITS-1:0]        AWADDR_M1,
-  input [`AXI_LEN_BITS-1:0]         AWLEN_M1,
-  input [`AXI_SIZE_BITS-1:0]        AWSIZE_M1,
-  input [1:0]                       AWBURST_M1,
-  input                             AWVALID_M1,
-  output logic                      AWREADY_M1,
-  input [`AXI_DATA_BITS-1:0]        WDATA_M1,
-  input [`AXI_STRB_BITS-1:0]        WSTRB_M1,
-  input                             WLAST_M1,
-  input                             WVALID_M1,
-  output logic                      WREADY_M1,
-  output logic [`AXI_ID_BITS-1:0]   BID_M1,
-  output logic [1:0]                BRESP_M1,
-  output logic                      BVALID_M1,
-  input                             BREADY_M1,
-  // READ
-  input [`AXI_ID_BITS-1:0]          ARID_M0,
-  input [`AXI_ADDR_BITS-1:0]        ARADDR_M0,
-  input [`AXI_LEN_BITS-1:0]         ARLEN_M0,
-  input [`AXI_SIZE_BITS-1:0]        ARSIZE_M0,
-  input [1:0]                       ARBURST_M0,
-  input                             ARVALID_M0,
-  output logic                      ARREADY_M0,
-  output logic [`AXI_ID_BITS-1:0]   RID_M0,
-  output logic [`AXI_DATA_BITS-1:0] RDATA_M0,
-  output logic [1:0]                RRESP_M0,
-  output logic                      RLAST_M0,
-  output logic                      RVALID_M0,
-  input                             RREADY_M0,
-  // M1
-  // READ
-  input [`AXI_ID_BITS-1:0]          ARID_M1,
-  input [`AXI_ADDR_BITS-1:0]        ARADDR_M1,
-  input [`AXI_LEN_BITS-1:0]         ARLEN_M1,
-  input [`AXI_SIZE_BITS-1:0]        ARSIZE_M1,
-  input [1:0]                       ARBURST_M1,
-  input                             ARVALID_M1,
-  output logic                      ARREADY_M1,
-  output logic [`AXI_ID_BITS-1:0]   RID_M1,
-  output logic [`AXI_DATA_BITS-1:0] RDATA_M1,
-  output logic [1:0]                RRESP_M1,
-  output logic                      RLAST_M1,
-  output logic                      RVALID_M1,
-  input                             RREADY_M1,
-  //SLAVE INTERFACE
-  // S0
-  // READ
-  output logic [`AXI_IDS_BITS-1:0]  ARID_S0,
-  output [`AXI_ADDR_BITS-1:0]       ARADDR_S0,
-  output [`AXI_LEN_BITS-1:0]        ARLEN_S0,
-  output [`AXI_SIZE_BITS-1:0]       ARSIZE_S0,
-  output [1:0]                      ARBURST_S0,
-  output logic                      ARVALID_S0,
-  input                             ARREADY_S0,
-  input [`AXI_IDS_BITS-1:0]         RID_S0,
-  input [`AXI_DATA_BITS-1:0]        RDATA_S0,
-  input [1:0]                       RRESP_S0,
-  input                             RLAST_S0,
-  input                             RVALID_S0,
-  output logic                      RREADY_S0,
-  // S1
-  // WRITE
-  output logic [`AXI_IDS_BITS-1:0]  AWID_S1,
-  output [`AXI_ADDR_BITS-1:0]       AWADDR_S1,
-  output [`AXI_LEN_BITS-1:0]        AWLEN_S1,
-  output [`AXI_SIZE_BITS-1:0]       AWSIZE_S1,
-  output [1:0]                      AWBURST_S1,
-  output logic                      AWVALID_S1,
-  input                             AWREADY_S1,
-  output logic [`AXI_DATA_BITS-1:0] WDATA_S1,
-  output logic [`AXI_STRB_BITS-1:0] WSTRB_S1,
-  output logic                      WLAST_S1,
-  output logic                      WVALID_S1,
-  input                             WREADY_S1,
-  input [`AXI_IDS_BITS-1:0]         BID_S1,
-  input [1:0]                       BRESP_S1,
-  input                             BVALID_S1,
-  output logic                      BREADY_S1,
-  // READ
-  output logic [`AXI_IDS_BITS-1:0]  ARID_S1,
-  output [`AXI_ADDR_BITS-1:0]       ARADDR_S1,
-  output [`AXI_LEN_BITS-1:0]        ARLEN_S1,
-  output [`AXI_SIZE_BITS-1:0]       ARSIZE_S1,
-  output [1:0]                      ARBURST_S1,
-  output logic                      ARVALID_S1,
-  input                             ARREADY_S1,
-  input [`AXI_IDS_BITS-1:0]         RID_S1,
-  input [`AXI_DATA_BITS-1:0]        RDATA_S1,
-  input [1:0]                       RRESP_S1,
-  input                             RLAST_S1,
-  input                             RVALID_S1,
-  output logic                      RREADY_S1,
-  // S2
-  // WRITE
-  output logic [`AXI_IDS_BITS-1:0]  AWID_S2,
-  output [`AXI_ADDR_BITS-1:0]       AWADDR_S2,
-  output [`AXI_LEN_BITS-1:0]        AWLEN_S2,
-  output [`AXI_SIZE_BITS-1:0]       AWSIZE_S2,
-  output [1:0]                      AWBURST_S2,
-  output logic                      AWVALID_S2,
-  input                             AWREADY_S2,
-  output logic [`AXI_DATA_BITS-1:0] WDATA_S2,
-  output logic [`AXI_STRB_BITS-1:0] WSTRB_S2,
-  output logic                      WLAST_S2,
-  output logic                      WVALID_S2,
-  input                             WREADY_S2,
-  input [`AXI_IDS_BITS-1:0]         BID_S2,
-  input [1:0]                       BRESP_S2,
-  input                             BVALID_S2,
-  output logic                      BREADY_S2,
-  // READ
-  output logic [`AXI_IDS_BITS-1:0]  ARID_S2,
-  output [`AXI_ADDR_BITS-1:0]       ARADDR_S2,
-  output [`AXI_LEN_BITS-1:0]        ARLEN_S2,
-  output [`AXI_SIZE_BITS-1:0]       ARSIZE_S2,
-  output logic [1:0]                ARBURST_S2,
-  output logic                      ARVALID_S2,
-  input                             ARREADY_S2,
-  input [`AXI_IDS_BITS-1:0]         RID_S2,
-  input [`AXI_DATA_BITS-1:0]        RDATA_S2,
-  input [1:0]                       RRESP_S2,
-  input                             RLAST_S2,
-  input                             RVALID_S2,
-  output logic                      RREADY_S2,
-  // S3
-  // WRITE
-/*  output logic [`AXI_IDS_BITS-1:0]  AWID_S3,
-  output [`AXI_ADDR_BITS-1:0]       AWADDR_S3,
-  output [`AXI_LEN_BITS-1:0]        AWLEN_S3,
-  output [`AXI_SIZE_BITS-1:0]       AWSIZE_S3,
-  output [1:0]                      AWBURST_S3,
-  output logic                      AWVALID_S3,
-  input                             AWREADY_S3,
-  output logic [`AXI_DATA_BITS-1:0] WDATA_S3,
-  output logic [`AXI_STRB_BITS-1:0] WSTRB_S3,
-  output logic                      WLAST_S3,
-  output logic                      WVALID_S3,
-  input                             WREADY_S3,
-  input [`AXI_IDS_BITS-1:0]         BID_S3,
-  input [1:0]                       BRESP_S3,
-  input                             BVALID_S3,
-  output  logic                     BREADY_S3,
-  // READ
-  output logic [`AXI_IDS_BITS-1:0]  ARID_S3,
-  output [`AXI_ADDR_BITS-1:0]       ARADDR_S3,
-  output [`AXI_LEN_BITS-1:0]        ARLEN_S3,
-  output [`AXI_SIZE_BITS-1:0]       ARSIZE_S3,
-  output logic [1:0]                ARBURST_S3,
-  output logic                      ARVALID_S3,
-  input                             ARREADY_S3,
-  input [`AXI_IDS_BITS-1:0]         RID_S3,
-  input [`AXI_DATA_BITS-1:0]        RDATA_S3,
-  input [1:0]                       RRESP_S3,
-  input                             RLAST_S3,
-  input                             RVALID_S3,
-  output logic                      RREADY_S3,*/
-  // S4
-  // WRITE
-  output logic [`AXI_IDS_BITS-1:0]  AWID_S4,
-  output [`AXI_ADDR_BITS-1:0]       AWADDR_S4,
-  output [`AXI_LEN_BITS-1:0]        AWLEN_S4,
-  output [`AXI_SIZE_BITS-1:0]       AWSIZE_S4,
-  output [1:0]                      AWBURST_S4,
-  output logic                      AWVALID_S4,
-  input                             AWREADY_S4,
-  output logic [`AXI_DATA_BITS-1:0] WDATA_S4,
-  output logic [`AXI_STRB_BITS-1:0] WSTRB_S4,
-  output logic                      WLAST_S4,
-  output logic                      WVALID_S4,
-  input                             WREADY_S4,
-  input [`AXI_IDS_BITS-1:0]         BID_S4,
-  input [1:0]                       BRESP_S4,
-  input                             BVALID_S4,
-  output logic                      BREADY_S4,
-  // READ
-  output logic [`AXI_IDS_BITS-1:0]  ARID_S4,
-  output [`AXI_ADDR_BITS-1:0]       ARADDR_S4,
-  output [`AXI_LEN_BITS-1:0]        ARLEN_S4,
-  output [`AXI_SIZE_BITS-1:0]       ARSIZE_S4,
-  output [1:0]                      ARBURST_S4,
-  output logic                      ARVALID_S4,
-  input                             ARREADY_S4,
-  input [`AXI_IDS_BITS-1:0]         RID_S4,
-  input [`AXI_DATA_BITS-1:0]        RDATA_S4,
-  input [1:0]                       RRESP_S4,
-  input                             RLAST_S4,
-  input                             RVALID_S4,
-  output logic                      RREADY_S4
+logic [`AXI_MASTER_BITS-1:0] MASTER;
+// default Slave
+logic [`AXI_IDS_BITS-1:0 ] ARID_DEFAULT;
+logic [`AXI_ADDR_BITS-1:0] ARADDR_DEFAULT;
+logic [`AXI_LEN_BITS-1:0 ] ARLEN_DEFAULT;
+logic [`AXI_SIZE_BITS-1:0] ARSIZE_DEFAULT;
+logic [1:0               ] ARBURST_DEFAULT;
+logic                      ARVALID_DEFAULT;
+logic                      ARREADY_DEFAULT;
+
+logic [`AXI_IDS_BITS-1:0 ] AWID_DEFAULT;
+logic [`AXI_ADDR_BITS-1:0] AWADDR_DEFAULT;
+logic [`AXI_LEN_BITS-1:0 ] AWLEN_DEFAULT;
+logic [`AXI_SIZE_BITS-1:0] AWSIZE_DEFAULT;
+logic [1:0               ] AWBURST_DEFAULT;
+logic                      AWVALID_DEFAULT;
+logic                      AWREADY_DEFAULT;
+
+
+logic [`AXI_DATA_BITS-1:0] WDATA_DEFAULT;
+logic [`AXI_STRB_BITS-1:0] WSTRB_DEFAULT;
+logic WLAST_DEFAULT;
+logic WVALID_DEFAULT;
+logic WREADY_DEFAULT;
+
+
+logic [`AXI_IDS_BITS-1:0] BID_DEFAULT;
+logic [1:0] BRESP_DEFAULT;
+logic BVALID_DEFAULT;
+logic BREADY_DEFAULT;
+	
+logic [`AXI_IDS_BITS-1:0] RID_DEFAULT;
+logic [`AXI_DATA_BITS-1:0] RDATA_DEFAULT;
+logic [1:0] RRESP_DEFAULT;
+logic RLAST_DEFAULT;
+logic RVALID_DEFAULT;
+logic RREADY_DEFAULT;
+
+assign master0.AWREADY = 1'b0;
+assign master0.WREADY = 1'b0;
+assign master0.BID = `AXI_ID_BITS'b0;
+assign master0.BRESP = `AXI_RESP_OKAY;
+assign master0.BVALID = 1'b0;
+
+Default_Slave Slave(
+    .clk(ACLK),
+    .rst(ARESETn),
+    .ARID_DEFAULT(ARID_DEFAULT),  
+    .ARADDR_DEFAULT(ARADDR_DEFAULT),
+    .ARLEN_DEFAULT(ARLEN_DEFAULT),
+    .ARSIZE_DEFAULT(ARSIZE_DEFAULT),
+    .ARBURST_DEFAULT(ARBURST_DEFAULT),
+    .ARVALID_DEFAULT(ARVALID_DEFAULT),
+    .ARREADY_DEFAULT(ARREADY_DEFAULT),
+    .AWID_DEFAULT(AWID_DEFAULT),
+    .AWADDR_DEFAULT(AWADDR_DEFAULT),
+    .AWLEN_DEFAULT(AWLEN_DEFAULT),
+    .AWSIZE_DEFAULT(AWSIZE_DEFAULT),
+    .AWBURST_DEFAULT(AWBURST_DEFAULT),
+    .AWVALID_DEFAULT(AWVALID_DEFAULT),
+    .AWREADY_DEFAULT(AWREADY_DEFAULT),
+    .BID_DEFAULT(BID_DEFAULT),
+    .BRESP_DEFAULT(BRESP_DEFAULT),
+    .BVALID_DEFAULT(BVALID_DEFAULT),
+    .BREADY_DEFAULT(BREADY_DEFAULT),
+    .RID_DEFAULT(RID_DEFAULT),
+    .RDATA_DEFAULT(RDATA_DEFAULT),
+    .RRESP_DEFAULT(RRESP_DEFAULT),
+    .RLAST_DEFAULT(RLAST_DEFAULT),
+    .RVALID_DEFAULT(RVALID_DEFAULT),
+    .RREADY_DEFAULT(RREADY_DEFAULT),
+	.WDATA_DEFAULT(WDATA_DEFAULT),
+	.WSTRB_DEFAULT(WSTRB_DEFAULT),
+	.WLAST_DEFAULT(WLAST_DEFAULT),
+	.WVALID_DEFAULT(WVALID_DEFAULT),
+	.WREADY_DEFAULT(WREADY_DEFAULT)
 );
 
-// ROM   0x0000_0000 ~ 0x0000_1FFF
-// IM    0x0001_0000 ~ 0x0001_FFFF
-// DM    0x0002_0000 ~ 0x0002_FFFF
-// Sctrl 0x1000_0000 ~ 0x1000_03FF
-// DRAM  0x2000_0000 ~ 0x201F_FFFF
+// READ ADDRESS Channel
+
+AR AR(
+    .clk(ACLK),
+    .rst(ARESETn),
+    .master0(master0),
+	//.ID_M0   (master0.ARID   ),
+	//.ADDR_M0 (master0.ARADDR ),
+	//.LEN_M0  (master0.ARLEN  ),
+	//.SIZE_M0 (master0.ARSIZE ),
+	//.BURST_M0(master0.ARBURST),
+	//.VALID_M0(master0.ARVALID),
+	.ID_M1   (master1.ARID   ),
+	.ADDR_M1 (master1.ARADDR ),
+	.LEN_M1  (master1.ARLEN  ),
+	.SIZE_M1 (master1.ARSIZE ),
+	.BURST_M1(master1.ARBURST),
+	.VALID_M1(master1.ARVALID),
+	.READY_S0(slave0.ARREADY),
+	.READY_S1(slave1.ARREADY),
+    .READY_S2(ARREADY_DEFAULT),
+	.ID_S0   (slave0.ARID   ),
+	.ADDR_S0 (slave0.ARADDR ),
+	.LEN_S0  (slave0.ARLEN  ),
+	.SIZE_S0 (slave0.ARSIZE ),
+	.BURST_S0(slave0.ARBURST),
+	.VALID_S0(slave0.ARVALID),
+	.ID_S1   (slave1.ARID   ),
+	.ADDR_S1 (slave1.ARADDR ),
+	.LEN_S1  (slave1.ARLEN  ),
+	.SIZE_S1 (slave1.ARSIZE ),
+	.BURST_S1(slave1.ARBURST),
+	.VALID_S1(slave1.ARVALID),
+	.ID_S2   (ARID_DEFAULT),
+	.ADDR_S2 (ARADDR_DEFAULT),
+	.LEN_S2  (ARLEN_DEFAULT),
+	.SIZE_S2 (ARSIZE_DEFAULT),
+	.BURST_S2(ARBURST_DEFAULT),
+	.VALID_S2(ARVALID_DEFAULT),
+    //.READY_M0(master0.ARREADY),
+    .READY_M1(master1.ARREADY)
+
+);
+
+// WRITE ADDRESS Channel
+AW AW(
+    .clk(ACLK),
+    .rst(ARESETn),
+	.ID_M1   (master1.AWID   ),
+	.ADDR_M1 (master1.AWADDR ),
+	.LEN_M1  (master1.AWLEN  ),
+	.SIZE_M1 (master1.AWSIZE ),
+	.BURST_M1(master1.AWBURST),
+	.VALID_M1(master1.AWVALID),
+	.READY_S0(slave0.AWREADY),
+	.READY_S1(slave1.AWREADY),
+    .READY_S2(AWREADY_DEFAULT),
+	.ID_S0   (slave0.AWID   ),
+	.ADDR_S0 (slave0.AWADDR ),
+	.LEN_S0  (slave0.AWLEN  ),
+	.SIZE_S0 (slave0.AWSIZE ),
+	.BURST_S0(slave0.AWBURST),
+	.VALID_S0(slave0.AWVALID),
+	.ID_S1   (slave1.AWID   ),
+	.ADDR_S1 (slave1.AWADDR ),
+	.LEN_S1  (slave1.AWLEN  ),
+	.SIZE_S1 (slave1.AWSIZE ),
+	.BURST_S1(slave1.AWBURST),
+	.VALID_S1(slave1.AWVALID),
+	.ID_S2   (AWID_DEFAULT),
+	.ADDR_S2 (AWADDR_DEFAULT),
+	.LEN_S2  (AWLEN_DEFAULT),
+	.SIZE_S2 (AWSIZE_DEFAULT),
+	.BURST_S2(AWBURST_DEFAULT),
+	.VALID_S2(AWVALID_DEFAULT),
+    .READY_M1(master1.AWREADY),
+	.MASTER  (MASTER)
+);
+
+
+//WRITE DATA CHannel
+DW DW(
+    .clk(ACLK),
+    .rst(ARESETn),
+	.WDATA_M1  (master1.WDATA),
+	.WSTRB_M1  (master1.WSTRB),
+	.WLAST_M1  (master1.WLAST),
+	.WVALID_M1 (master1.WVALID),
+	.WREADY_M1 (master1.WREADY),
+	.WDATA_S0  (slave0.WDATA),
+	.WSTRB_S0  (slave0.WSTRB),
+	.WLAST_S0  (slave0.WLAST),
+	.WVALID_S0 (slave0.WVALID),
+	.WREADY_S0 (slave0.WREADY),
+    .AWVALID_S0(slave0.AWVALID),
+	.WDATA_S1  (slave1.WDATA),
+	.WSTRB_S1  (slave1.WSTRB),
+	.WLAST_S1  (slave1.WLAST),
+	.WVALID_S1 (slave1.WVALID),
+	.WREADY_S1 (slave1.WREADY),
+    .AWVALID_S1(slave1.AWVALID),
+    .MASTER(MASTER),
+    .AWVALID_S2(AWVALID_DEFAULT),
+	.WDATA_S2(WDATA_DEFAULT),
+	.WSTRB_S2(WSTRB_DEFAULT),
+	.WLAST_S2(WLAST_DEFAULT),
+	.WVALID_S2(WVALID_DEFAULT),
+	.WREADY_S2(WREADY_DEFAULT)
+
+);
+
+RW RW(
+    .clk(ACLK),
+    .rst(ARESETn),
+	.BID_M1   (master1.BID),
+	.BRESP_M1 (master1.BRESP),
+	.BVALID_M1(master1.BVALID),
+	.BREADY_M1(master1.BREADY),
+	.BID_S0   (slave0.BID),
+	.BRESP_S0 (slave0.BRESP),
+	.BVALID_S0(slave0.BVALID),
+	.BREADY_S0(slave0.BREADY),
+	.BID_S1   (slave1.BID),
+	.BRESP_S1 (slave1.BRESP),
+	.BVALID_S1(slave1.BVALID),
+	.BREADY_S1(slave1.BREADY),
+	.BID_S2   (BID_DEFAULT),
+	.BRESP_S2 (BRESP_DEFAULT),
+	.BVALID_S2(BVALID_DEFAULT),
+	.BREADY_S2(BREADY_DEFAULT)
+);
+DR DR(
+    .clk(ACLK),
+    .rst(ARESETn),
+	.RID_M0   (master0.RID),
+	.RDATA_M0 (master0.RDATA),
+	.RLAST_M0 (master0.RLAST),
+	.RRESP_M0 (master0.RRESP),
+	.RVALID_M0(master0.RVALID),
+	.RREADY_M0(master0.RREADY),
+	.RID_M1   (master1.RID),
+	.RDATA_M1 (master1.RDATA),
+	.RRESP_M1 (master1.RRESP),
+	.RLAST_M1 (master1.RLAST),
+	.RVALID_M1(master1.RVALID),
+	.RREADY_M1(master1.RREADY),
+	.RID_S0   (slave0.RID),
+	.RDATA_S0 (slave0.RDATA),
+	.RRESP_S0 (slave0.RRESP),
+	.RLAST_S0 (slave0.RLAST),
+	.RVALID_S0(slave0.RVALID),
+	.RREADY_S0(slave0.RREADY),
+	.RID_S1   (slave1.RID),
+	.RDATA_S1 (slave1.RDATA),
+	.RRESP_S1 (slave1.RRESP),
+	.RLAST_S1 (slave1.RLAST),
+	.RVALID_S1(slave1.RVALID),
+	.RREADY_S1(slave1.RREADY),
+	.RID_S2   (RID_DEFAULT),
+	.RDATA_S2 (RDATA_DEFAULT),
+	.RRESP_S2 (RRESP_DEFAULT),
+	.RLAST_S2 (RLAST_DEFAULT),
+	.RVALID_S2(RVALID_DEFAULT),
+	.RREADY_S2(RREADY_DEFAULT)
+);
 
 endmodule
